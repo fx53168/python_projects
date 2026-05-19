@@ -14,11 +14,24 @@ class ShoppingCart:
     # 新增商品
     def add_item(self):
         name = input("商品名稱：").strip()
+        price = int(input("價格："))
         qty = int(input("數量："))
 
-        self.cart[name] = self.cart.get(name, 0) + qty
+        # 商品已存在
+        if name in self.cart:
 
-        print(f"已新增 {name} x {qty}")
+            self.cart[name]["qty"] += qty
+
+            # 更新價格（可選）
+            self.cart[name]["price"] = price
+
+        else:
+            self.cart[name] = {
+                "price": price,
+                "qty": qty
+            }
+
+        print(f"已新增 {name} : ${price}  {qty}")
 
     # 刪除商品
     def remove_item(self):
@@ -52,10 +65,37 @@ class ShoppingCart:
             print("購物車是空的")
             return
 
-        print("\n===== 購物車內容 =====")
+        print("\n================ 購物車內容 ================")
 
-        for idx, (name, qty) in enumerate(self.cart.items(), start=1):
-            print(f"{idx}. {name} x {qty}")
+        # 表頭（統一寬度）
+        print(
+            f"{'商品名稱':}\t"
+            f"{'價格':}\t"
+            f"{'數量':}\t"
+            f"{'小計':}\t"
+
+
+        )
+
+        print("-" * 50)
+
+        total = 0
+
+        for name, item in self.cart.items():
+            price = item["price"]
+            qty = item["qty"]
+            subtotal = item["price"] * item["qty"]
+            total += subtotal
+
+            print(
+                f"{name:}\t"
+                f"${price:.2f}\t"
+                f"{qty:}\t"
+                f"${subtotal:.2f}\t"
+            )
+
+        print("-" * 50)
+        print(f"{'總金額':}\t${total:.2f}")
 
     # 離開系統
     def exit_program(self):
